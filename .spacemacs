@@ -150,7 +150,7 @@ before layers configuration."
    ;; point when it reaches the top or bottom of the screen.
    dotspacemacs-smooth-scrolling t
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
-   dotspacemacs-smartparens-strict-mode nil
+   dotspacemacs-smartparens-strict-mode t
    ;; Select a scope to highlight delimiters. Possible value is `all',
    ;; `current' or `nil'. Default is `all'
    dotspacemacs-highlight-delimiters 'all
@@ -220,6 +220,14 @@ layers configuration."
         blink-cursor-blinks 20
         evil-emacs-state-cursor '("Salmon" (bar . 2)))
   (blink-cursor-mode 1)
+
+  ;; disable hl-line-mode for terminal modes
+  (add-hook 'eshell-mode-hook (lambda ()
+                                (setq-local global-hl-line-mode
+                                            nil)))
+  (add-hook 'term-mode-hook (lambda ()
+                              (setq-local global-hl-line-mode
+                                          nil)))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -236,5 +244,5 @@ layers configuration."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(neo-dir-link-face ((t (:foreground "SeaGreen2"))))
+ '(neo-dir-link-face ((t (:foreground "#8CAC8C"))))
  )
