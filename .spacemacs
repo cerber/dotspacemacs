@@ -20,7 +20,6 @@
      auto-completion
      better-defaults
      emacs-lisp
-     git
      markdown
      org
      semantic
@@ -29,6 +28,7 @@
             shell-default-height 30
             shell-default-position 'bottom)
      syntax-checking
+     git
      version-control
      shell-scripts
      scala
@@ -84,14 +84,14 @@ before layers configuration."
                          zenburn)
 
    ;; If non nil the cursor color matches the state color.
-   dotspacemacs-colorize-cursor-according-to-state t
+   dotspacemacs-colorize-cursor-according-to-state nil
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Roboto Mono"
                                :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.3)
+                               :powerline-scale 1.0)
 
    ;; The leader key
    dotspacemacs-leader-key "SPC"
@@ -165,6 +165,11 @@ before layers configuration."
    dotspacemacs-default-package-repository nil
    )
   ;; User initialization goes here
+
+  ;; setup right and left margins
+  (add-hook 'window-configuration-change-hook
+            (lambda ()
+              (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 0 0)))
   )
 
 (defun dotspacemacs/config ()
@@ -197,11 +202,6 @@ layers configuration."
   (eval-after-load "sql"
     '(load-library "sql-indent"))
 
-  ;; setup right and left margins
-  (add-hook 'window-configuration-change-hook
-            (lambda ()
-              (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 0 0)))
-
   ;; move line up/down
   (defun move-line-up () (interactive) (transpose-lines 1) (previous-line 2))
   (defun move-line-down () (interactive) (next-line 1) (transpose-lines 1) (previous-line 1))
@@ -211,6 +211,15 @@ layers configuration."
   ;; (set-face-attribute 'neo-file-link-face nil :foreground "Light Gray")
   ;; (set-default neo-theme (quote nerd))
   (set-face-attribute 'region nil :inverse-video t)
+  (set-face-attribute 'cursor nil :background "DarkSalmon")
+
+  ;; customize my cursor
+  (setq cursor-type 'bar
+        blink-cursor-delay 0.5
+        blink-cursor-interval 0.25
+        blink-cursor-blinks 20
+        evil-emacs-state-cursor '("Salmon" (bar . 2)))
+  (blink-cursor-mode 1)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -220,23 +229,12 @@ layers configuration."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil)
- '(ahs-default-range (quote ahs-range-whole-buffer))
- '(ahs-idle-interval 0.25)
- '(ahs-idle-timer 0 t)
- '(ahs-inhibit-face-list nil)
- '(column-number-mode t)
- '(menu-bar-mode nil)
- '(neo-theme (quote nerd))
- '(ring-bell-function (quote ignore) t)
- '(tool-bar-mode nil))
+ '(neo-theme (quote nerd)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  '(neo-dir-link-face ((t (:foreground "SeaGreen2"))))
  )
