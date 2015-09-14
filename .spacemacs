@@ -33,6 +33,7 @@
      shell-scripts
      scala
      erlang
+     elixir
      sql
      ess
      )
@@ -169,8 +170,7 @@ before layers configuration."
   ;; setup right and left margins
   (add-hook 'window-configuration-change-hook
             (lambda ()
-              (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 0 0)))
-  )
+              (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 0 0))))
 
 (defun dotspacemacs/config ()
   "Configuration function.
@@ -205,8 +205,14 @@ layers configuration."
   ;; move line up/down
   (defun move-line-up () (interactive) (transpose-lines 1) (previous-line 2))
   (defun move-line-down () (interactive) (next-line 1) (transpose-lines 1) (previous-line 1))
-  (global-set-key [(alt super up)] 'move-line-up)
-  (global-set-key [(alt super down)] 'move-line-down)
+
+  ;; (global-set-key [(alt super up)] 'move-line-up)
+  ;; (global-set-key [(alt super down)] 'move-line-down)
+  (global-set-key (kbd "M-s-<up>") 'move-line-up)
+  (global-set-key (kbd "M-s-<down>") 'move-line-down)
+
+  (global-set-key (kbd "s--") 'senator-unfold-tag)
+  (global-set-key (kbd "s-=") 'senator-fold-tag)
 
   ;; (set-face-attribute 'neo-file-link-face nil :foreground "Light Gray")
   ;; (set-default neo-theme (quote nerd))
@@ -222,13 +228,8 @@ layers configuration."
   (blink-cursor-mode 1)
 
   ;; disable hl-line-mode for terminal modes
-  (add-hook 'eshell-mode-hook (lambda ()
-                                (setq-local global-hl-line-mode
-                                            nil)))
-  (add-hook 'term-mode-hook (lambda ()
-                              (setq-local global-hl-line-mode
-                                          nil)))
-)
+  (add-hook 'eshell-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+  (add-hook 'term-mode-hook (lambda () (setq-local global-hl-line-mode nil))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -244,5 +245,4 @@ layers configuration."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(neo-dir-link-face ((t (:foreground "#8CAC8C"))))
- )
+ '(neo-dir-link-face ((t (:foreground "#8CAC8C")))))
