@@ -22,6 +22,7 @@
      emacs-lisp
      markdown
      org
+     gnus
      semantic
      emoji
      (shell :variables
@@ -34,14 +35,21 @@
      scala
      erlang
      elixir
-     sql
      ess
+     sql
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
    dotspacemacs-additional-packages '(sql-indent
+                                      font-lock+
+                                      hlinum
+                                      mwim
+                                      on-screen
+                                      oneonone
+                                      ukrainian-holidays
+                                      quasi-monochrome-theme
                                       hc-zenburn-theme)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -80,9 +88,7 @@ before layers configuration."
                          solarized-dark
                          spacemacs-light
                          spacemacs-dark
-                         leuven
-                         monokai
-                         zenburn)
+                         leuven)
 
    ;; If non nil the cursor color matches the state color.
    dotspacemacs-colorize-cursor-according-to-state nil
@@ -178,11 +184,14 @@ before layers configuration."
 layers configuration."
   (add-to-list 'exec-path "~/.cabal/bin/")
   (golden-ratio-mode 1)
+  (on-screen-global-mode +1)
+  (whitespace-mode t)
+  (delete-selection-mode t)
+
   (setq golden-ratio-exclude-modes '("ediff-mode"
                                      "term-mode"
                                      "eshell-mode"
                                      "dired-mode"))
-  (whitespace-mode t)
   (add-hook 'after-init-hook  #'global-flycheck-mode)
 
   ;;(add-hook 'prog-mode-hook  'highlight-indentation-current-column-mode)
@@ -201,6 +210,8 @@ layers configuration."
   ;; SQL Indentation
   (eval-after-load "sql"
     '(load-library "sql-indent"))
+
+  (hlinum-activate)
 
   ;; move line up/down
   (defun move-line-up () (interactive) (transpose-lines 1) (previous-line 2))
@@ -226,6 +237,32 @@ layers configuration."
         blink-cursor-blinks 20
         evil-emacs-state-cursor '("Salmon" (bar . 2)))
   (blink-cursor-mode 1)
+
+  ;; Get email, and store in nnml
+  (setq gnus-secondary-select-methods
+        '(
+          (nnimap "gmail"
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))
+          ))
+
+  ;; Send email via Gmail:
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-default-smtp-server "smtp.gmail.com")
+
+  ;; Archive outgoing email in Sent folder on imap.gmail.com:
+  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail")
+
+  ;; set return email address based on incoming email address
+  (setq gnus-posting-styles
+        '(((header "to" "Dmitry Nezhinsky") (address "d.nezhinsky@gmail.com"))
+          ((header "to" "Dmitry Nezhinsky") (address "d.nezhinsky@gmail.com"))))
+
+  ;; store email in ~/gmail directory
+  (setq nnml-directory "~/gmail")
+  (setq message-directory "~/gmail")
 
   ;; disable hl-line-mode for terminal modes
   (add-hook 'eshell-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
